@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THNDR</title>
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #1e1e1e url('https://steamuserimages-a.akamaihd.net/ugc/2483247603778237880/768CCAA78A841111A26545654B3B64FE3E2D9439/?imw=637&imh=358&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true') center/cover no-repeat fixed;
+            font-family: 'UnifrakturCook', serif;
+            margin: 0;
+            color: #f0f0f0;
+            overflow: hidden;
+            animation: moveBackground 30s linear infinite;
+        }
+
+        .form-container {
+            background-color: rgba(44, 44, 44, 0.85);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-container h2 {
+            margin-bottom: 20px;
+            color: #f0f0f0;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            margin-bottom: 5px;
+            color: #bbb;
+            text-align: left;
+            width: 100%;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background-color: #333;
+            color: #f0f0f0;
+            font-size: 14px;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #c047df;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .form-container button:hover {
+            background-color: #8b208b;
+        }
+
+        /* Animation for moving background */
+        @keyframes moveBackground {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        /* Loading bar styles */
+        .loading-bar {
+            width: 100%;
+            background-color: #444;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 20px;
+            display: none; /* Hidden initially */
+        }
+
+        .loading-fill {
+            height: 10px;
+            background-color: #15942a;
+            width: 0;
+            transition: width 1s linear; /* Animate the width change */
+        }
+
+        /* Message display styles */
+        .message {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #bbb;
+            display: none; /* Hidden initially */
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>THNDR NUKES</h2>
+        <form onsubmit="handleSubmit(event)">
+            <div class="form-group">
+                <label for="serverId">Server ID:</label>
+                <input type="text" id="serverId" name="serverId" required>
+            </div>
+            <div class="form-group">
+                <label for="channelCounts">Channel Counts:</label>
+                <input type="text" id="channelCounts" name="channelCounts" required>
+            </div>
+            <button type="submit">Start Raiding</button>
+        </form>
+        <div class="loading-bar" id="loadingBar">
+            <div class="loading-fill" id="loadingFill"></div>
+        </div>
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+            
+            // Get the number of channels from input
+            const channelCounts = document.getElementById("channelCounts").value;
+
+            // Hide the form and show the loading bar
+            const loadingBar = document.getElementById("loadingBar");
+            const loadingFill = document.getElementById("loadingFill");
+            const submitButton = event.target.querySelector('button');
+            const messageDisplay = document.getElementById("message");
+            
+            submitButton.style.display = 'none'; // Hide the submit button
+            loadingBar.style.display = "block"; // Show loading bar
+            messageDisplay.style.display = "block"; // Show message area
+
+            // Messages and their corresponding times
+            const messages = [
+                "injecting.exe", 
+                "Joining server", 
+                "Getting perms", 
+                "Found breach", 
+                "Entering channels", 
+                `Adding ${channelCounts} channels`, 
+                "Loading in 30 seconds!", 
+                "Completed raid!"
+            ];
+
+            // Display the first message immediately
+            messageDisplay.innerText = messages[0];
+
+            // Fill loading bar and show messages at specific intervals
+            for (let i = 1; i < messages.length; i++) {
+                setTimeout(() => {
+                    messageDisplay.innerText = messages[i];
+                    loadingFill.style.width = `${(i / (messages.length - 1)) * 100}%`; // Fill the loading bar proportionally
+                }, i * 10000); // 10 seconds interval for each message
+            }
+
+            // Redirect to YouTube link after 60 seconds
+            setTimeout(() => {
+                window.location.href = "https://www.youtube.com/watch?v=RfiQYRn7fBg"; // Redirect to the specified URL
+            }, 60000); // 60000 ms = 1 minute
+        }
+    </script>
+</body>
+</html>
