@@ -11,12 +11,13 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: #1e1e1e url('https://i.pinimg.com/originals/59/69/68/59696865ff86db2f3e65552831d14158.gif') center/cover no-repeat fixed;
+            background: #1e1e1e url('https://cdn.pfps.gg/pfps/2667-e-girl.gif') center/cover no-repeat fixed;
             font-family: 'UnifrakturCook', serif;
             margin: 0;
             color: #f0f0f0;
             overflow: hidden;
             animation: moveBackground 30s linear infinite;
+            position: relative;
         }
 
         .form-container {
@@ -28,7 +29,7 @@
             max-width: 350px;
             text-align: center;
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
 
         .form-container h2 {
@@ -63,7 +64,7 @@
         .form-container button {
             width: 100%;
             padding: 10px;
-            background-color: #a52828;
+            background-color: #007bff;
             color: #fff;
             border: none;
             border-radius: 4px;
@@ -73,7 +74,7 @@
         }
 
         .form-container button:hover {
-            background-color: #861a1a;
+            background-color: #0056b3;
         }
 
         /* Animation for moving background */
@@ -94,7 +95,7 @@
 
         .loading-fill {
             height: 10px;
-            background-color: #15942a;
+            background-color: #007bff;
             width: 0;
             transition: width 1s linear; /* Animate the width change */
         }
@@ -106,21 +107,55 @@
             color: #bbb;
             display: none; /* Hidden initially */
         }
+
+        .error {
+            color: #ff4d4d; /* Error message color */
+            margin-top: 10px;
+            display: none; /* Hidden initially */
+        }
+
+        /* Status bar styles */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .status-circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgb(75, 206, 75); /* Green circle for active status */
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="form-container">
-        <h2>THNDR NUKES</h2>
+        <h2>THNDR NUKE</h2>
+        
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-circle"></div>
+            <div>Active</div>
+        </div>
+
         <form onsubmit="handleSubmit(event)">
+            <div class="form-group">
+                <label for="userId">User ID:</label>
+                <input type="text" id="userId" name="userId" required>
+            </div>
             <div class="form-group">
                 <label for="serverId">Server ID:</label>
                 <input type="text" id="serverId" name="serverId" required>
+                <div class="error" id="serverIdError">Invalid Server ID. Must be an 18-digit number.</div>
             </div>
             <div class="form-group">
                 <label for="channelCounts">Channel Counts:</label>
                 <input type="text" id="channelCounts" name="channelCounts" required>
             </div>
-            <button type="submit">Start Raiding</button>
+            <button type="submit">Start</button>
         </form>
         <div class="loading-bar" id="loadingBar">
             <div class="loading-fill" id="loadingFill"></div>
@@ -129,23 +164,35 @@
     </div>
 
     <script>
+        function isValidServerId(serverId) {
+            return /^\d{18}$/.test(serverId); // Check if server ID is an 18-digit number
+        }
+
         function handleSubmit(event) {
             event.preventDefault(); // Prevent the form from submitting the traditional way
-            
-            // Get the number of channels from input
-            const channelCounts = document.getElementById("channelCounts").value;
 
-            // Hide the form and show the loading bar
+            const serverId = document.getElementById("serverId").value;
             const loadingBar = document.getElementById("loadingBar");
             const loadingFill = document.getElementById("loadingFill");
             const submitButton = event.target.querySelector('button');
             const messageDisplay = document.getElementById("message");
-            
-            submitButton.style.display = 'none'; // Hide the submit button
-            loadingBar.style.display = "block"; // Show loading bar
-            messageDisplay.style.display = "block"; // Show message area
+            const serverIdError = document.getElementById("serverIdError");
 
-            // Messages and their corresponding times
+            // Clear previous error message
+            serverIdError.style.display = "none";
+
+            if (!isValidServerId(serverId)) {
+                // Show error if server ID is invalid
+                serverIdError.style.display = "block";
+                return;
+            }
+
+            submitButton.style.display = 'none';
+            loadingBar.style.display = "block";
+            messageDisplay.style.display = "block";
+
+            const channelCounts = document.getElementById("channelCounts").value;
+
             const messages = [
                 "injecting.exe", 
                 "Joining server", 
@@ -157,21 +204,28 @@
                 "Completed raid!"
             ];
 
-            // Display the first message immediately
-            messageDisplay.innerText = messages[0];
+            let i = 0;
+            messageDisplay.innerText = messages[i++];
 
-            // Fill loading bar and show messages at specific intervals
-            for (let i = 1; i < messages.length; i++) {
-                setTimeout(() => {
-                    messageDisplay.innerText = messages[i];
-                    loadingFill.style.width = `${(i / (messages.length - 1)) * 100}%`; // Fill the loading bar proportionally
-                }, i * 10000); // 10 seconds interval for each message
-            }
+            const loadingInterval = setInterval(() => {
+                if (i < messages.length) {
+                    messageDisplay.innerText = messages[i++];
+                } else {
+                    clearInterval(loadingInterval);
+                }
+            }, 3000); // Change message every 3 seconds
 
-            // Redirect to YouTube link after 60 seconds
-            setTimeout(() => {
-                window.location.href = "https://www.youtube.com/watch?v=RfiQYRn7fBg"; // Redirect to the specified URL
-            }, 60000); // 60000 ms = 1 minute
+            let loadProgress = 0;
+            const loadingIntervalBar = setInterval(() => {
+                loadProgress += 10;
+                loadingFill.style.width = loadProgress + "%";
+                if (loadProgress >= 100) {
+                    clearInterval(loadingIntervalBar);
+                    setTimeout(() => {
+                        window.location.href = "https://www.youtube.com/watch?v=RfiQYRn7fBg";
+                    }, 1000); // Redirect after 1 second
+                }
+            }, 3000); // Simulate loading every 3 seconds
         }
     </script>
 </body>
